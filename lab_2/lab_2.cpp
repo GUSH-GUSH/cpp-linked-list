@@ -172,7 +172,7 @@ public:
 		if (!head) return false;
 
 		const int newPos = posOfEl + ((Npos > 0) ? (Npos + 1) : Npos);
-		if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;	//Якщо некоректні індекси елементів
+		if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;	//Якщо некоректні позиції елементів
 
 		int currPos = 2;
 		ListItem
@@ -196,27 +196,21 @@ public:
 		//Виключна ситуація, коли зміщуємо в кінець
 		if (currPos == newPos) prevOfNewPos = prevItem;
 
+		ListItem** p_prevOfOldPos_NI = NULL, ** p_prevOfNewPos_NI = NULL;
+
 		//Два виключні випадки, коли або переставляємо У початок, або ІЗ початку
-		//Із початку
-		if (posOfEl == 1 && prevOfNewPos) {
-			head = MovingItem->nextItem;
-			MovingItem->nextItem = prevOfNewPos->nextItem;
-			prevOfNewPos->nextItem = MovingItem;
-			return true;
-		}//У початок
-		else if (newPos == 1 && prevOfOldPos) {
-			prevOfOldPos->nextItem = MovingItem->nextItem;
-			MovingItem->nextItem = head;
-			head = MovingItem;
-			return true;
-		}
+		if (posOfEl == 1 && prevOfNewPos) p_prevOfOldPos_NI = &head; //Із початку
+		else if (newPos == 1 && prevOfOldPos) p_prevOfNewPos_NI = &head; //У початок
 		else if (!prevOfOldPos || !prevOfNewPos) return false;
 
-		//Тепер перестановка зі старої позиції на 
 
-		prevOfOldPos->nextItem = MovingItem->nextItem;
-		MovingItem->nextItem = prevOfNewPos->nextItem;
-		prevOfNewPos->nextItem = MovingItem;
+		if (!p_prevOfOldPos_NI) p_prevOfOldPos_NI = &prevOfOldPos->nextItem;
+		if (!p_prevOfNewPos_NI) p_prevOfNewPos_NI = &prevOfNewPos->nextItem;
+
+
+		*p_prevOfOldPos_NI = MovingItem->nextItem;
+		MovingItem->nextItem = *p_prevOfNewPos_NI;
+		*p_prevOfNewPos_NI = MovingItem;
 
 		return true;
 	}
@@ -282,53 +276,9 @@ int main()
 	cout << "\n\n";
 
 
-	list.MoveElement(5, 2);
+	cout << (list.MoveElement(-5, 0) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
 
 	list.__debug_print();
 	cout << "\n\n";
-
-
-	/*
-	list.DeleteEveryNth(2);
-	//4 1 10 129
-	list.__debug_print(); cout << "\n\n";
-	*/
-
-	/*
-	list.DeleteFromStart();
-	//5 1 6 10 8 129
-	list.__debug_print(); cout << "\n\n";
-
-
-
-	list.DeletePosition(3);
-	//5 1 10 8 129
-	list.__debug_print(); cout << "\n\n";
-
-
-
-	list.DeletePosition(1);
-	//1 10 8 129
-	list.__debug_print(); cout << "\n\n";
-
-
-
-	list.DeletePosition(0);
-	//1 10 8 129
-	list.__debug_print(); cout << "\n\n";
-
-
-
-	list.DeletePosition(5);
-	//1 10 8 129
-	list.__debug_print(); cout << "\n\n";
-
-
-
-	list.DeletePosition(4);
-	//1 10 8 129
-	list.__debug_print(); cout << "\n\n";
-	*/
-
 }
 
