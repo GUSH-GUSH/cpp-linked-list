@@ -172,7 +172,7 @@ public:
 		if (!head) return false;
 
 		const int newPos = posOfEl + ((Npos > 0) ? (Npos + 1) : Npos);
-		if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;
+		if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;	//Якщо некоректні індекси елементів
 
 		int currPos = 2;
 		ListItem
@@ -191,21 +191,20 @@ public:
 			currItem = currItem->nextItem;
 		}
 
+		if (!MovingItem) return false;	//Якщо зміщуваний об'экт не було знайдено
 
 		//Виключна ситуація, коли зміщуємо в кінець
-		if (currPos == newPos && MovingItem && !prevOfNewPos) prevOfNewPos = prevItem;
+		if (currPos == newPos) prevOfNewPos = prevItem;
 
 		//Два виключні випадки, коли або переставляємо У початок, або ІЗ початку
 		//Із початку
 		if (posOfEl == 1 && prevOfNewPos) {
-			MovingItem = head;
 			head = MovingItem->nextItem;
 			MovingItem->nextItem = prevOfNewPos->nextItem;
 			prevOfNewPos->nextItem = MovingItem;
 			return true;
 		}//У початок
 		else if (newPos == 1 && prevOfOldPos) {
-			MovingItem = prevOfOldPos->nextItem;
 			prevOfOldPos->nextItem = MovingItem->nextItem;
 			MovingItem->nextItem = head;
 			head = MovingItem;
@@ -213,7 +212,7 @@ public:
 		}
 		else if (!prevOfOldPos || !prevOfNewPos) return false;
 
-		//Тепер перестановка зі старої позиції на нову
+		//Тепер перестановка зі старої позиції на 
 
 		prevOfOldPos->nextItem = MovingItem->nextItem;
 		MovingItem->nextItem = prevOfNewPos->nextItem;
