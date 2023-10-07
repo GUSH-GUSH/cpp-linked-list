@@ -18,19 +18,6 @@ private:
 		}
 	};
 
-	ListItem* getListItem(const unsigned int index) {
-		ListItem* currItem = head;
-		int currIndex = 0;
-
-		while (currItem) {
-			if (currIndex == index) return currItem;
-
-			currIndex++;
-			currItem = currItem->nextItem;
-		}
-		return NULL;
-	}
-
 	ListItem* head = NULL;
 public:
 
@@ -147,9 +134,11 @@ public:
 		}
 	}
 
+
 	// -1  -  ok														  = = ->
 	//  1  -  not ok (fix = all what is more than zero must be increased) = -> =
 
+	//Дописать коменты
 	bool MoveElement(const int posOfEl, const int Npos) {
 		if (!head) return false;
 
@@ -197,7 +186,21 @@ public:
 		return true;
 	}
 
+	//Посмотреть про конструктор копирования
+	List* GetCopy() {
+		List* listCopy = new List;
+		
+		ListItem* currItem = head, **currItemCopy = &listCopy->head;
 
+		while (currItem) {
+			*currItemCopy = new ListItem(currItem->data);
+			
+			currItem = currItem->nextItem;
+			currItemCopy = &((*currItemCopy)->nextItem);
+		}
+		return listCopy;
+	}
+	//Проверить
 
 	int* Get(const unsigned int index) {
 		ListItem* currItem = head;
@@ -216,6 +219,7 @@ public:
 	}
 
 
+	~List() { Clear(); }
 
 
 	void __debug_print() {
@@ -238,8 +242,6 @@ int main()
 
 	List list;
 
-	//cout << list.Get(10) << endl;
-
 	list.AddToStart(1);
 	list.AddToStart(5);
 
@@ -261,8 +263,15 @@ int main()
 	cout << (list.MoveElement(-5, 0) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
 	list.__debug_print();
 
+	List* list2 = list.GetCopy();
+	list2->DeleteEveryNth(2);
 
+	cout << "\n\n";
+	list.__debug_print();
+	list2->__debug_print();
+	
 	char exit;
+	cin >> exit;
 	do {
 		system("cls");
 
@@ -286,4 +295,3 @@ int main()
 
 	cout << "\n\n";
 }
-
