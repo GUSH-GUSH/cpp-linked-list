@@ -169,70 +169,55 @@ public:
 	//  1  -  not ok (fix = all what is more than zero must be increased) = -> =
 
 	bool MoveElement(const int posOfEl, const int Npos) {
+		if (!head) return false;
 
 		const int newPos = posOfEl + ((Npos > 0) ? (Npos + 1) : Npos);
 		if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;
 
-
-		if (!head) return false;
-
-		ListItem* currItem = head->nextItem, * prevItem = head, * prevOfNewPos = NULL, * prevOfOldPos = NULL;
 		int currPos = 2;
+		ListItem
+			* currItem = head->nextItem,
+			* prevItem = head,
+			* prevOfNewPos = NULL,
+			* prevOfOldPos = NULL,
+			* MovingItem = (posOfEl == 1) ? head : NULL;
 
 		while (currItem) {
-			if (currPos == posOfEl) prevOfOldPos = prevItem;
-			if (currPos == newPos) prevOfNewPos = prevItem;
+			if (currPos == posOfEl) { prevOfOldPos = prevItem; MovingItem = currItem; }
+			else if (currPos == newPos) prevOfNewPos = prevItem;
 
 			currPos++;
 			prevItem = currItem;
 			currItem = currItem->nextItem;
 		}
-		if (currPos == newPos) {}
 
 
-		if (posOfEl == 1 || newPos == 1) {
+		//Виключна ситуація, коли зміщуємо в кінець
+		if (currPos == newPos && MovingItem && !prevOfNewPos) prevOfNewPos = prevItem;
 
-			if (posOfEl == 1 && prevOfNewPos) {
-
-				ListItem* item = head;
-
-				head = item->nextItem;
-
-				item->nextItem = prevOfNewPos->nextItem;
-
-				prevOfNewPos->nextItem = item;
-				return true;
-			}
-			else if (newPos == 1 && prevOfOldPos) {
-				ListItem* item = prevOfOldPos->nextItem;
-
-				prevOfOldPos->nextItem = item->nextItem;
-
-				item->nextItem = head;
-
-				head = item;
-				return true;
-			}
-			else return false;
-		}
-		else if (currPos == newPos && prevOfOldPos) {
-
-			prevOfNewPos = prevItem;
-
-			ListItem* item = prevOfOldPos->nextItem;
-			prevOfOldPos->nextItem = item->nextItem;
-			item->nextItem = NULL;
-			prevOfNewPos->nextItem = item;
+		//Два виключні випадки, коли або переставляємо У початок, або ІЗ початку
+		//Із початку
+		if (posOfEl == 1 && prevOfNewPos) {
+			MovingItem = head;
+			head = MovingItem->nextItem;
+			MovingItem->nextItem = prevOfNewPos->nextItem;
+			prevOfNewPos->nextItem = MovingItem;
+			return true;
+		}//У початок
+		else if (newPos == 1 && prevOfOldPos) {
+			MovingItem = prevOfOldPos->nextItem;
+			prevOfOldPos->nextItem = MovingItem->nextItem;
+			MovingItem->nextItem = head;
+			head = MovingItem;
+			return true;
 		}
 		else if (!prevOfOldPos || !prevOfNewPos) return false;
 
-
 		//Тепер перестановка зі старої позиції на нову
 
-		ListItem* item = prevOfOldPos->nextItem;
-		prevOfOldPos->nextItem = item->nextItem;
-		item->nextItem = prevOfNewPos->nextItem;
-		prevOfNewPos->nextItem = item;
+		prevOfOldPos->nextItem = MovingItem->nextItem;
+		MovingItem->nextItem = prevOfNewPos->nextItem;
+		prevOfNewPos->nextItem = MovingItem;
 
 		return true;
 	}
@@ -298,7 +283,7 @@ int main()
 	cout << "\n\n";
 
 
-	list.MoveElement(7, -5);
+	list.MoveElement(5, 2);
 
 	list.__debug_print();
 	cout << "\n\n";
