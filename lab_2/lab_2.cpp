@@ -147,24 +147,6 @@ public:
 		}
 	}
 
-
-	/*bool MoveElement(const unsigned int positionOfElement, const int N_position) {
-
-		const int newPosition = positionOfElement + N_position;
-
-		if (positionOfElement < 1 || newPosition < 1) return false;
-
-		int* pointOfElement = Get(positionOfElement-1);
-
-		if (!pointOfElement || !AddAfterPosition(newPosition-1, *pointOfElement)) return false;
-
-		DeletePosition((newPosition <= positionOfElement) ? positionOfElement + 1 : positionOfElement);
-
-		return true;
-
-		//Вроде да, но нет))
-	}*/
-
 	// -1  -  ok														  = = ->
 	//  1  -  not ok (fix = all what is more than zero must be increased) = -> =
 
@@ -277,8 +259,31 @@ int main()
 
 
 	cout << (list.MoveElement(-5, 0) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
-
 	list.__debug_print();
+
+
+	char exit;
+	do {
+		system("cls");
+
+		int pos, N;
+
+		list.__debug_print();
+		
+		cout << "\n\n";
+		cout << "Введите номер элемента: ";
+		cin >> pos;
+		cout << "Введите количество позиций: ";
+		cin >> N;
+		
+		cout << "\n" << (list.MoveElement(pos, N) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
+
+		list.__debug_print();
+
+		cin >> exit;
+
+	} while (exit != 'e');
+
 	cout << "\n\n";
 }
 
