@@ -24,6 +24,8 @@ public:
 
 	List() {}
 
+	List(int* arr, int length) { CopyFromArr(arr, length); }
+
 	~List() { Clear(); }
 
 	unsigned GetLength() { return length; }
@@ -149,13 +151,12 @@ public:
 		}
 	}
 
-
 	void Sort(bool sortUp = true) {
-		
-		for(listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
+		if (!head) return;
+		for (listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
 			listItem* RequiredItem = i;
 
-			for (listItem* j = i->nextItem; j != NULL; j = j->nextItem) 
+			for (listItem* j = i->nextItem; j != NULL; j = j->nextItem)
 				if ((RequiredItem->data > j->data) == sortUp) RequiredItem = j; //Добавить опциональную сортировку (вверх, вниз)
 
 			if (RequiredItem->data != i->data) {
@@ -171,7 +172,7 @@ public:
 	bool MoveElement(const int posOfEl, const int Npos) {
 		// -1  -  ok														  = = ->
 		//  1  -  not ok (fix = all what is more than zero must be increased) = -> =
-		
+
 		if (!head) return false;
 
 		const int newPos = posOfEl + ((Npos > 0) ? (Npos + 1) : Npos);
@@ -219,20 +220,24 @@ public:
 	}
 
 
-
+	void CopyFromArr(int* arr, int length) {
+		Clear();
+		for (int i = length - 1; i >= 0; i--)
+			AddToStart(arr[i]);
+	}
 
 
 
 	//Посмотреть про конструктор копирования
 	List* GetCopy() {
 		List* listCopy = new List(*this);
-		
+
 		listItem* currItem = head;
 		listItem** currItemCopy = &listCopy->head;
 
 		while (currItem) {
 			*currItemCopy = new listItem(currItem->data);
-			
+
 			currItem = currItem->nextItem;
 			currItemCopy = &((*currItemCopy)->nextItem);
 		}
@@ -276,14 +281,14 @@ public:
 		else if (!list2.head) return list1.GetCopy();
 
 		List* newList = list1.GetCopy();	//За основу нового ліста береться копія list1
-	
+
 		listItem* lastItem = newList->head;
 		while (lastItem->nextItem) lastItem = lastItem->nextItem;	//Шукається останній елемент
 
 		List* secondPart = list2.GetCopy();		//Створюється копія list2
 		lastItem->nextItem = secondPart->head;	//У кінець новго ліста записується початок копії list2
 		newList->length += secondPart->length;	//Сумується поле length
-		
+
 		secondPart->head = NULL;				//У копії list2 затирається посилання head
 		delete secondPart;						//Аби при очищенні пам'яті елементи не стерлися
 		return newList;
@@ -316,14 +321,171 @@ public:
 	}
 };
 
+int InputElement() {
+	int value;
+	cout << "Введіть значення: ";
+	cin >> value;
+	return value;
+}
+unsigned InputPosition(unsigned maxPos = 1) {
+	unsigned pos;
+	do {
+		cout << "Введіть позицію [0 - " << maxPos << "]: ";
+		cin >> pos;
+	} while (maxPos < pos);
+	return pos;
+}
 
 
 int main()
 {
-    SetConsoleOutputCP(1251);
+	SetConsoleOutputCP(1251);
 
-	List list;
+	List* list1, * list2, * IntersectedList, * MergedList;
 
+	int arr1[7] = { 4, 5, 1, 6, 10, 8, 129 };
+	int arr2[5] = { 13, 8, 125, 4, 0 };
+
+	list1 = new List(arr1, 7);
+	list2 = new List(arr2, 5);
+	IntersectedList = MergedList = NULL;
+
+
+	char answ;
+	do {
+		system("cls");
+		cout << "List1  {length = " << list1->GetLength() << "}\n\n";
+		list1->__debug_print();
+		cout << "\n\n";
+		cout << "List2  {length = " << list2->GetLength() << "}\n\n";
+		list2->__debug_print();
+		cout << "\n\n";
+
+		List* list = NULL;
+		char whoseList;
+		cout << "\n******************************";
+		cout << "\n#1 -> Додати на початок";
+		cout << "\n#2 -> Додати в кінець=";
+		cout << "\n#3 -> Додати після позиції";
+		cout << "\n#4 -> Видалити із початку=";
+		cout << "\n#5 -> Видалити позицію";
+		cout << "\n#6 -> Видалити кожний N-й";
+		cout << "\n#7 -> Очистити";
+		cout << "\n#8 -> Сортувати";
+		cout << "\n#9 -> Пересунути елемент";
+		cout << "\n#10 -> Скопіювати список";
+		cout << "\n#11 -> Склеїти списки";
+		cout << "\n#12 -> Створити переіз";
+		cout << "\n******************************";
+
+		cout << "\n\nВибір: "; cin >> answ;
+
+		cout << "\nЛіст з яким буде дія";
+		cout << "\n#1 -> list1";
+		cout << "\n#2 -> list2";
+		cout << "\n#3 -> Скопійований";
+
+		cout << "\n\nВибір: "; cin >> whoseList;
+
+		switch (whoseList) {
+		case '1':
+			list = list1;
+			break;
+		case '2':
+			list = list2;
+			break;
+		case '3':
+
+			break;
+		default:
+			list = list1;
+			break;
+		}
+		system("cls");
+		if (!list) {
+			cout << "Ліста не існує! (далі - будь-який символ)\n";
+			cin >> answ;
+			continue;
+		}
+
+		/*
+
+		*	AddToStart
+			AddToEnd
+		*	AddAfterPosition
+
+			DeleteFromStart
+		*	DeletePosition
+		*	DeleteEveryNth
+		*	Clear
+
+		*	Sort
+		*	MoveElement
+		*	GetCopy
+
+		*	MergeLists
+		*	CreateIntersection
+
+		*/
+
+		//cout << "\n\n";
+
+		switch (answ) {
+		case '1':	//Ok
+			list->AddToStart(InputElement());
+			break;
+		case '2':	//Ok
+			list->AddToEnd(InputElement());
+			break;
+		case '3':
+			list->AddAfterPosition(InputPosition(list->GetLength()), InputElement());	//?
+			break;
+		case '4':	//Ok
+			list->DeleteFromStart();
+			break;
+		case '5':
+
+			break;
+		case '6': {	//Ok
+			unsigned N;
+			cout << "Введіть N: "; cin >> N;
+			list->DeleteEveryNth(N);
+			break;
+		}
+		case '7':	//Ok
+			list->Clear();
+			break;
+		case '8': {	//Ok
+			bool sortMode;
+			cout << "За зростанням/спаданням (1/0): ";
+			cin >> sortMode;
+			list->Sort(sortMode);
+			break;
+		}
+		case '9':
+
+			break;
+		case '10':
+
+			break;
+		case '11':
+
+			break;
+		case '12':
+
+			break;
+		}
+
+
+	} while (answ != 'e');
+
+	if (list1) delete list1;
+	if (list2) delete list2;
+	if (MergedList) delete MergedList;
+	if (IntersectedList) delete IntersectedList;
+
+
+	/*
 	list.AddToStart(1);
 	list.AddToStart(5);
 
@@ -338,14 +500,14 @@ int main()
 
 	//4 5 1 6 10 8 129
 
-	/*
-	list.__debug_print();
-	cout << "\n\n";
+	//
+	//list.__debug_print();
+	//cout << "\n\n";
 
-	list.Sort();
-	list.__debug_print();
-	cout << "\n\n";
-	*/
+	//list.Sort();
+	//list.__debug_print();
+	//cout << "\n\n";
+	//
 
 	List* list2 = list.GetCopy();
 	list2->DeleteEveryNth(2);
@@ -378,7 +540,7 @@ int main()
 	IntersectList->__debug_print();
 	cout << "length: " << IntersectList->GetLength() << "\n";
 	cout << "\n\n\n";
-	
+
 	List* MargedList = List::MergeLists(list, *list2);
 	MargedList->__debug_print();
 
@@ -390,13 +552,13 @@ int main()
 		int pos, N;
 
 		list.__debug_print();
-		
+
 		cout << "\n\n";
 		cout << "Введите номер элемента: ";
 		cin >> pos;
 		cout << "Введите количество позиций: ";
 		cin >> N;
-		
+
 		cout << "\n" << (list.MoveElement(pos, N) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
 
 		list.__debug_print();
@@ -406,4 +568,6 @@ int main()
 	} while (exit != 'e');
 
 	cout << "\n\n";
+
+*/
 }
