@@ -19,11 +19,14 @@ private:
 	};
 
 	listItem* head = NULL;
+	unsigned length = 0;
 public:
 
 	List() {}
 
 	~List() { Clear(); }
+
+	unsigned GetLength() { return length; }
 
 	//Функції додавання
 	void AddToStart(const int data) { //Приймає безпосередньо дані, які треба додати
@@ -35,6 +38,7 @@ public:
 			newItem->nextItem = head;
 			head = newItem;
 		}
+		this->length++;
 	}
 
 	void AddToEnd(const int data) {
@@ -48,6 +52,7 @@ public:
 
 			curr->nextItem = newItem;
 		}
+		this->length++;
 	}
 
 	bool AddAfterPosition(const unsigned int position, const int data) {
@@ -64,6 +69,7 @@ public:
 			if (currPosition == position) {
 				newItem->nextItem = currItem->nextItem;
 				currItem->nextItem = newItem;
+				this->length++;
 				return true;
 			}
 
@@ -81,6 +87,7 @@ public:
 		listItem* newHead = head->nextItem;
 		delete head;
 		head = newHead;
+		this->length--;
 		return true;
 	}
 
@@ -96,6 +103,7 @@ public:
 			if (currPosition == position) { //Дошли до удаляемого элемента - currItem;
 				prevItem->nextItem = currItem->nextItem;
 				delete currItem;
+				this->length--;
 				return true;
 			}
 
@@ -120,6 +128,8 @@ public:
 				prevItem->nextItem = currItem->nextItem;
 				delete currItem;
 				currItem = prevItem;
+
+				this->length--;
 			}
 
 			position++;
@@ -131,6 +141,7 @@ public:
 	void DeleteFromEnd() {}
 
 	void Clear() {
+		length = 0;
 		while (head) {
 			listItem* newHead = head->nextItem;
 			delete head;
@@ -214,7 +225,7 @@ public:
 
 	//Посмотреть про конструктор копирования
 	List* GetCopy() {
-		List* listCopy = new List;
+		List* listCopy = new List(*this);
 		
 		listItem* currItem = head;
 		listItem** currItemCopy = &listCopy->head;
@@ -259,40 +270,58 @@ public:
 		cout << endl;
 	}
 
+	static List* MergeLists(List& list1, List& list2) {
+		if (!list1.head && !list2.head) return NULL;
+		else if (!list1.head) return list2.GetCopy();
+		else if (!list2.head) return list1.GetCopy();
 
-	/*static List* CreateIntersection(List& list1, List& list2) {
-		List* newList = new List();
+		List* newList = list1.GetCopy();	//За основу нового ліста береться копія list1
+	
+		listItem* lastItem = newList->head;
+		while (lastItem->nextItem) lastItem = lastItem->nextItem;	//Шукається останній елемент
 
-		for (listItem* pl1 = list1.head, *pl2 = list2.head; pl1 && pl2; pl1 = pl1->nextItem, pl2 = pl2->nextItem)
-			if (pl1->data == pl2->data) newList->AddToEnd(pl1->data);
-
+		List* secondPart = list2.GetCopy();		//Створюється копія list2
+		lastItem->nextItem = secondPart->head;	//У кінець новго ліста записується початок копії list2
+		newList->length += secondPart->length;	//Сумується поле length
+		
+		secondPart->head = NULL;				//У копії list2 затирається посилання head
+		delete secondPart;						//Аби при очищенні пам'яті елементи не стерлися
 		return newList;
-	}*/
-	//Да.. Но нет) Тут он будет идти синхронно по двум спискам, и копировать встретившиееся одинаковые, на одинаковых ПОЗИЦИЯХ
-	//А суть задачи немного другая. Пересечение. Тоесть элементы, которые есть в обоих списках, внезависимости от их позиций
-
+	}
 
 	static List* CreateIntersection(List& list1, List& list2) {
 		if (!list1.head || !list2.head) return NULL;
 
 		List* newList = new List();
+		List* smallerList = &list1, * largerList = &list2;
 
-		for (listItem* pl1 = list1.head; pl1; pl1 = pl1->nextItem) {
-			
+		if (list1.length > list2.length) { smallerList = &list2; largerList = &list1; }
+
+		for (listItem* pl1 = smallerList->head; pl1; pl1 = pl1->nextItem) {
+			bool isAdded = false;
+
+			for (listItem* pnl = newList->head; pnl; pnl = pnl->nextItem)
+				if (pnl->data == pl1->data) { isAdded = true; break; }
+
+			if (isAdded) continue;
+
+			for (listItem* pl2 = largerList->head; pl2; pl2 = pl2->nextItem) {
+				if (pl1->data == pl2->data) {
+					newList->AddToEnd(pl1->data);
+					break;
+				}
+			}
 		}
 		return newList;
 	}
-
-
 };
 
 
 
 int main()
 {
-	SetConsoleOutputCP(1251);
+    SetConsoleOutputCP(1251);
 
-	
 	List list;
 
 	list.AddToStart(1);
@@ -309,26 +338,49 @@ int main()
 
 	//4 5 1 6 10 8 129
 
+	/*
 	list.__debug_print();
 	cout << "\n\n";
 
 	list.Sort();
 	list.__debug_print();
 	cout << "\n\n";
-	
+	*/
 
 	List* list2 = list.GetCopy();
 	list2->DeleteEveryNth(2);
 
 	cout << "\n\n";
 	list.__debug_print();
+	cout << "length: " << list.GetLength() << "\n";
 	list2->__debug_print();
+	cout << "length: " << list2->GetLength() << "\n";
 	//list1		4 5 1 6 10 8 129
 	//list2		4 1 10 129
 
+	list2->DeletePosition(3);
 	list2->AddAfterPosition(3, 8);
-	cout << "\n\n";
+	list2->AddToEnd(14);
+	list2->AddToEnd(8);
+	list2->AddToStart(9);
+	list2->DeletePosition(3);
+	//list1		4 5 1 6 10 8 129
+	//list2		9 4 129 14 8
 
+	//Intersect 4 129 8
+
+	list.__debug_print();
+	cout << "length: " << list.GetLength() << "\n";
+	list2->__debug_print();
+	cout << "length: " << list2->GetLength() << "\n";
+	List* IntersectList = List::CreateIntersection(list, *list2);
+
+	IntersectList->__debug_print();
+	cout << "length: " << IntersectList->GetLength() << "\n";
+	cout << "\n\n\n";
+	
+	List* MargedList = List::MergeLists(list, *list2);
+	MargedList->__debug_print();
 
 	char exit;
 	cin >> exit;
