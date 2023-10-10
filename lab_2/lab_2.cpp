@@ -140,7 +140,7 @@ public:
 		}
 	}
 
-	void DeleteFromEnd() {}
+	//void DeleteFromEnd() {}
 
 	void Clear() {
 		length = 0;
@@ -263,7 +263,7 @@ public:
 	}
 
 
-	void __debug_print() {
+	void Print() {
 		if (!head) { cout << "Список порожній\n"; return; }
 		listItem* currItem = head;
 
@@ -327,42 +327,46 @@ int InputElement() {
 	cin >> value;
 	return value;
 }
-unsigned InputPosition(unsigned maxPos = 1) {
+unsigned InputPosition(unsigned maxPos = 1, unsigned minPos = 0) {
 	unsigned pos;
 	do {
-		cout << "Введіть позицію [0 - " << maxPos << "]: ";
+		cout << "Введіть позицію ["<< minPos <<" - " << maxPos << "]: ";
 		cin >> pos;
-	} while (maxPos < pos);
+	} while (maxPos < pos || pos < minPos);
 	return pos;
 }
 
+void listPrint(const char* listName, List* list) {
+	cout << listName << "  {length = " << list->GetLength() << "}\n\n";
+	list->Print();
+	cout << "\n\n";
+}
 
 int main()
 {
 	SetConsoleOutputCP(1251);
 
-	List* list1, * list2, * IntersectedList, * MergedList;
+	List* list1, * list2, * IntersectedList, * MergedList, * ListCopy;
 
 	int arr1[7] = { 4, 5, 1, 6, 10, 8, 129 };
 	int arr2[5] = { 13, 8, 125, 4, 0 };
 
 	list1 = new List(arr1, 7);
 	list2 = new List(arr2, 5);
-	IntersectedList = MergedList = NULL;
+	IntersectedList = MergedList = ListCopy = NULL;
 
 
-	char answ;
+	int answ;
 	do {
 		system("cls");
-		cout << "List1  {length = " << list1->GetLength() << "}\n\n";
-		list1->__debug_print();
-		cout << "\n\n";
-		cout << "List2  {length = " << list2->GetLength() << "}\n\n";
-		list2->__debug_print();
-		cout << "\n\n";
+		listPrint("List1", list1);
+		listPrint("List2", list2);
+		if (ListCopy) listPrint("Скопійований", ListCopy);
+		if (MergedList) listPrint("Склеєний", ListCopy);
+		if (IntersectedList) listPrint("Переріз", ListCopy);
 
 		List* list = NULL;
-		char whoseList;
+		char whoseList = 0;
 		cout << "\n******************************";
 		cout << "\n#1 -> Додати на початок";
 		cout << "\n#2 -> Додати в кінець=";
@@ -375,37 +379,41 @@ int main()
 		cout << "\n#9 -> Пересунути елемент";
 		cout << "\n#10 -> Скопіювати список";
 		cout << "\n#11 -> Склеїти списки";
-		cout << "\n#12 -> Створити переіз";
+		cout << "\n#12 -> Видалити склеєний";
+		cout << "\n#13 -> Створити переріз";
+		cout << "\n#14 -> Видалити переріз";
 		cout << "\n******************************";
 
 		cout << "\n\nВибір: "; cin >> answ;
 
-		cout << "\nЛіст з яким буде дія";
-		cout << "\n#1 -> list1";
-		cout << "\n#2 -> list2";
-		cout << "\n#3 -> Скопійований";
+		if (answ < 11 && answ > 0) {
+			cout << "\nЛіст з яким буде дія";
+			cout << "\n#1 -> list1";
+			cout << "\n#2 -> list2";
+			cout << "\n#3 -> Склеєний";
 
-		cout << "\n\nВибір: "; cin >> whoseList;
+			cout << "\n\nВибір: "; cin >> whoseList;
 
-		switch (whoseList) {
-		case '1':
-			list = list1;
-			break;
-		case '2':
-			list = list2;
-			break;
-		case '3':
-
-			break;
-		default:
-			list = list1;
-			break;
-		}
-		system("cls");
-		if (!list) {
-			cout << "Ліста не існує! (далі - будь-який символ)\n";
-			cin >> answ;
-			continue;
+			switch (whoseList) {
+			case '1':
+				list = list1;
+				break;
+			case '2':
+				list = list2;
+				break;
+			case '3':
+				list = MergedList;
+				break;
+			default:
+				list = list1;
+				break;
+			}
+			system("cls");
+			if (!list) {
+				cout << "Ліста не існує! (далі - будь-який символ)\n";
+				cin >> answ;
+				continue;
+			}
 		}
 
 		/*
@@ -431,143 +439,72 @@ int main()
 		//cout << "\n\n";
 
 		switch (answ) {
-		case '1':	//Ok
+		case 1:	//Ok
 			list->AddToStart(InputElement());
 			break;
-		case '2':	//Ok
+		case 2:	//Ok
 			list->AddToEnd(InputElement());
 			break;
-		case '3':
+		case 3:
 			list->AddAfterPosition(InputPosition(list->GetLength()), InputElement());	//?
 			break;
-		case '4':	//Ok
+		case 4:	//Ok
 			list->DeleteFromStart();
 			break;
-		case '5':
-
+		case 5:	//Ok
+			list->DeletePosition(InputPosition(list->GetLength(), 1));
 			break;
-		case '6': {	//Ok
+		case 6: {	//Ok
 			unsigned N;
 			cout << "Введіть N: "; cin >> N;
 			list->DeleteEveryNth(N);
 			break;
 		}
-		case '7':	//Ok
+		case 7:	//Ok
 			list->Clear();
 			break;
-		case '8': {	//Ok
+		case 8: {	//Ok
 			bool sortMode;
 			cout << "За зростанням/спаданням (1/0): ";
 			cin >> sortMode;
 			list->Sort(sortMode);
 			break;
 		}
-		case '9':
-
+		case 9: {
+			list->Print(); cout << "\n";
+			int Npos, posOfEl = InputPosition(list->GetLength(), 1);
+			cout << "Кількість позицій для пересування: "; cin >> Npos;
+			list->MoveElement(posOfEl, Npos);
 			break;
-		case '10':
-
+		}
+		case 10:	//Ok
+			if (ListCopy) delete ListCopy;
+			ListCopy = list->GetCopy();
 			break;
-		case '11':
-
+		case 11:	//Ok
+			if (MergedList) delete MergedList;
+			MergedList = List::MergeLists(*list1, *list2);
 			break;
-		case '12':
-
+		case 12:	//Ok
+			if (MergedList) delete MergedList;
+			MergedList = NULL;
+			break;
+		case 13:	//Ok
+			if (IntersectedList) delete IntersectedList;
+			IntersectedList = List::CreateIntersection(*list1, *list2);
+			break;
+		case 14:	//Ok
+			if (IntersectedList) delete IntersectedList;
+			IntersectedList = NULL;
 			break;
 		}
 
 
-	} while (answ != 'e');
+	} while (answ != 0);
 
 	if (list1) delete list1;
 	if (list2) delete list2;
+	if (ListCopy) delete ListCopy;
 	if (MergedList) delete MergedList;
 	if (IntersectedList) delete IntersectedList;
-
-
-	/*
-	list.AddToStart(1);
-	list.AddToStart(5);
-
-	list.AddToEnd(6);
-	list.AddToEnd(8);
-
-	list.AddAfterPosition(3, 10);
-
-	list.AddAfterPosition(5, 129);
-
-	list.AddAfterPosition(0, 4);
-
-	//4 5 1 6 10 8 129
-
-	//
-	//list.__debug_print();
-	//cout << "\n\n";
-
-	//list.Sort();
-	//list.__debug_print();
-	//cout << "\n\n";
-	//
-
-	List* list2 = list.GetCopy();
-	list2->DeleteEveryNth(2);
-
-	cout << "\n\n";
-	list.__debug_print();
-	cout << "length: " << list.GetLength() << "\n";
-	list2->__debug_print();
-	cout << "length: " << list2->GetLength() << "\n";
-	//list1		4 5 1 6 10 8 129
-	//list2		4 1 10 129
-
-	list2->DeletePosition(3);
-	list2->AddAfterPosition(3, 8);
-	list2->AddToEnd(14);
-	list2->AddToEnd(8);
-	list2->AddToStart(9);
-	list2->DeletePosition(3);
-	//list1		4 5 1 6 10 8 129
-	//list2		9 4 129 14 8
-
-	//Intersect 4 129 8
-
-	list.__debug_print();
-	cout << "length: " << list.GetLength() << "\n";
-	list2->__debug_print();
-	cout << "length: " << list2->GetLength() << "\n";
-	List* IntersectList = List::CreateIntersection(list, *list2);
-
-	IntersectList->__debug_print();
-	cout << "length: " << IntersectList->GetLength() << "\n";
-	cout << "\n\n\n";
-
-	List* MargedList = List::MergeLists(list, *list2);
-	MargedList->__debug_print();
-
-	char exit;
-	cin >> exit;
-	do {
-		system("cls");
-
-		int pos, N;
-
-		list.__debug_print();
-
-		cout << "\n\n";
-		cout << "Введите номер элемента: ";
-		cin >> pos;
-		cout << "Введите количество позиций: ";
-		cin >> N;
-
-		cout << "\n" << (list.MoveElement(pos, N) ? "Сместилось" : "Не сместилось(") << "\n\n\n";
-
-		list.__debug_print();
-
-		cin >> exit;
-
-	} while (exit != 'e');
-
-	cout << "\n\n";
-
-*/
 }
