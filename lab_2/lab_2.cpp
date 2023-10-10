@@ -362,8 +362,8 @@ int main()
 		listPrint("List1", list1);
 		listPrint("List2", list2);
 		if (ListCopy) listPrint("Скопійований", ListCopy);
-		if (MergedList) listPrint("Склеєний", ListCopy);
-		if (IntersectedList) listPrint("Переріз", ListCopy);
+		if (MergedList) listPrint("Склеєний", MergedList);
+		if (IntersectedList) listPrint("Переріз", IntersectedList);
 
 		List* list = NULL;
 		char whoseList = 0;
@@ -378,10 +378,11 @@ int main()
 		cout << "\n#8 -> Сортувати";
 		cout << "\n#9 -> Пересунути елемент";
 		cout << "\n#10 -> Скопіювати список";
-		cout << "\n#11 -> Склеїти списки";
-		cout << "\n#12 -> Видалити склеєний";
-		cout << "\n#13 -> Створити переріз";
-		cout << "\n#14 -> Видалити переріз";
+		cout << "\n#11 -> Видалити скопійований";
+		cout << "\n#12 -> Склеїти списки";
+		cout << "\n#13 -> Видалити склеєний";
+		cout << "\n#14 -> Створити переріз";
+		cout << "\n#15 -> Видалити переріз";
 		cout << "\n******************************";
 
 		cout << "\n\nВибір: "; cin >> answ;
@@ -390,7 +391,9 @@ int main()
 			cout << "\nЛіст з яким буде дія";
 			cout << "\n#1 -> list1";
 			cout << "\n#2 -> list2";
-			cout << "\n#3 -> Склеєний";
+			cout << "\n#3 -> Скопійований";
+			cout << "\n#4 -> Склеєний";
+			cout << "\n#5 -> Переріз";
 
 			cout << "\n\nВибір: "; cin >> whoseList;
 
@@ -402,7 +405,13 @@ int main()
 				list = list2;
 				break;
 			case '3':
+				list = ListCopy;
+				break;
+			case '4':
 				list = MergedList;
+				break;
+			case '5':
+				list = IntersectedList;
 				break;
 			default:
 				list = list1;
@@ -415,26 +424,6 @@ int main()
 				continue;
 			}
 		}
-
-		/*
-
-		*	AddToStart
-			AddToEnd
-		*	AddAfterPosition
-
-			DeleteFromStart
-		*	DeletePosition
-		*	DeleteEveryNth
-		*	Clear
-
-		*	Sort
-		*	MoveElement
-		*	GetCopy
-
-		*	MergeLists
-		*	CreateIntersection
-
-		*/
 
 		//cout << "\n\n";
 
@@ -470,30 +459,36 @@ int main()
 			list->Sort(sortMode);
 			break;
 		}
-		case 9: {
+		case 9: {	//Ok
 			list->Print(); cout << "\n";
 			int Npos, posOfEl = InputPosition(list->GetLength(), 1);
 			cout << "Кількість позицій для пересування: "; cin >> Npos;
 			list->MoveElement(posOfEl, Npos);
 			break;
 		}
-		case 10:	//Ok
+		case 10: {	//Ok
+			List* copy = list->GetCopy();
 			if (ListCopy) delete ListCopy;
-			ListCopy = list->GetCopy();
+			ListCopy = copy;
 			break;
+		}
 		case 11:	//Ok
-			if (MergedList) delete MergedList;
-			MergedList = List::MergeLists(*list1, *list2);
+			if (ListCopy) delete ListCopy;
+			ListCopy = NULL;
 			break;
 		case 12:	//Ok
 			if (MergedList) delete MergedList;
-			MergedList = NULL;
+			MergedList = List::MergeLists(*list1, *list2);
 			break;
 		case 13:	//Ok
+			if (MergedList) delete MergedList;
+			MergedList = NULL;
+			break;
+		case 14:	//Ok
 			if (IntersectedList) delete IntersectedList;
 			IntersectedList = List::CreateIntersection(*list1, *list2);
 			break;
-		case 14:	//Ok
+		case 15:	//Ok
 			if (IntersectedList) delete IntersectedList;
 			IntersectedList = NULL;
 			break;
