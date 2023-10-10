@@ -1,7 +1,140 @@
 ﻿#include <iostream>
 #include <windows.h>
-
+#include "List.h"
 using namespace std;
+
+class LoopList {
+private:
+	struct listItem {
+		int data;
+		listItem* nextItem;
+
+		listItem(int data, listItem* nextItem = NULL)
+		{
+			this->data = data;
+			this->nextItem = nextItem;
+		}
+	};
+
+	listItem* head = NULL, * tail = NULL;
+	unsigned length = 0;
+public:
+
+	LoopList() {}
+
+	LoopList(int* arr, int length) { CopyFromArr(arr, length); }
+
+	~LoopList() { Clear(); }
+
+	unsigned GetLength() { return length; }
+
+
+	void AddToStart(const int data) {
+		listItem* newItem = new listItem(data);
+
+		if (head == NULL || tail == NULL) head = tail = newItem;
+		else {
+			newItem->nextItem = head;
+			head = newItem;
+		}
+		tail->nextItem = head;
+		this->length++;
+	}
+
+
+	void AddToEnd(const int data) {
+		listItem* newItem = new listItem(data);
+
+		if (head == NULL || tail == NULL) head = tail = newItem;
+		else {
+			tail->nextItem = newItem;
+			tail = newItem;
+		}
+		tail->nextItem = head;
+		this->length++;
+	}
+
+	//Функції видалення
+	bool DeleteFromStart() {
+		if (!head) return false;
+
+		listItem* newHead = head->nextItem;
+		delete head;
+		head = newHead;
+
+		tail->nextItem = head;
+		this->length--;
+		return true;
+	}
+
+	bool DeleteFromEnd() {
+		if (!tail || !head) return false;
+
+		listItem* currItem = head;
+		while (currItem->nextItem != tail) currItem = currItem->nextItem; //Находим предпоследний элемент
+
+		delete tail;
+
+		tail = currItem;
+		tail->nextItem = head;
+
+		length--;
+		return true;
+	}
+
+
+	void Clear() {
+		if (!head || !tail) return;
+		length = 0;
+		while (head != tail) {
+			listItem* newHead = head->nextItem;
+			delete head;
+			head = newHead;
+		}
+		delete tail;
+		head = tail = NULL;
+	}
+
+	void CopyFromArr(int* arr, int length) {
+		Clear();
+		for (int i = length - 1; i >= 0; i--)
+			AddToStart(arr[i]);
+	}
+
+	void Print() {
+		if (!head) { cout << "Список порожній\n"; return; }
+		listItem* currItem = head;
+
+		while (currItem) {
+			cout << currItem->data << "  ";
+			currItem = currItem->nextItem;
+		}
+
+		cout << endl;
+	}
+
+	static void CreateNewCommands(LoopList com1, LoopList com2, int n, int m) {
+		if (com1.length != com2.length || com1.length == 0) return;
+
+		if (n % com1.length == 0 || m % com2.length == 0) return;
+
+		int length = com1.length;
+
+		LoopList* newCom1 = new LoopList, * newCom2 = new LoopList;
+
+		listItem* currItem_com1 = com1.head, * currItem_com2 = com2.head;
+		while (newCom1->length < length) {
+			for (int i = 0; i < n; i++) currItem_com1 = currItem_com1->nextItem;
+			for (int i = 0; i < m; i++) currItem_com2 = currItem_com2->nextItem;
+
+			if (newCom1->length < length) newCom1->AddToEnd(currItem_com1->data);
+			if (newCom1->length < length) newCom1->AddToEnd(currItem_com2->data);
+
+		}
+
+	}
+};
+
 
 
 int InputElement() {
