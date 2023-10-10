@@ -330,7 +330,7 @@ int InputElement() {
 unsigned InputPosition(unsigned maxPos = 1, unsigned minPos = 0) {
 	unsigned pos;
 	do {
-		cout << "Введіть позицію ["<< minPos <<" - " << maxPos << "]: ";
+		cout << "Введіть позицію [" << minPos << " - " << maxPos << "]: ";
 		cin >> pos;
 	} while (maxPos < pos || pos < minPos);
 	return pos;
@@ -378,12 +378,11 @@ int main()
 		cout << "\n#8 -> Сортувати";
 		cout << "\n#9 -> Пересунути елемент";
 		cout << "\n#10 -> Скопіювати список";
-		cout << "\n#11 -> Видалити скопійований";
-		cout << "\n#12 -> Склеїти списки";
-		cout << "\n#13 -> Видалити склеєний";
-		cout << "\n#14 -> Створити переріз";
-		cout << "\n#15 -> Видалити переріз";
+		cout << "\n#11 -> Склеїти списки";
+		cout << "\n#12 -> Створити переріз";
+		cout << "\n#13 -> Видалити";
 		cout << "\n******************************";
+		cout << "\n\n#0 -> Вихід";
 
 		cout << "\n\nВибір: "; cin >> answ;
 
@@ -428,70 +427,79 @@ int main()
 		//cout << "\n\n";
 
 		switch (answ) {
-		case 1:	//Ok
+		case 1:	//Ok		Додавання в початок
 			list->AddToStart(InputElement());
 			break;
-		case 2:	//Ok
+		case 2:	//Ok		Додавання в кінець	
 			list->AddToEnd(InputElement());
 			break;
-		case 3:
+		case 3:	//Ok		Додавання після позиції
 			list->AddAfterPosition(InputPosition(list->GetLength()), InputElement());	//?
 			break;
-		case 4:	//Ok
+		case 4:	//Ok		Видалення із початку
 			list->DeleteFromStart();
 			break;
-		case 5:	//Ok
+		case 5:	//Ok		Видалення N-го
 			list->DeletePosition(InputPosition(list->GetLength(), 1));
 			break;
-		case 6: {	//Ok
+		case 6: {	//Ok	Видалення кожного N-го
+			list->Print(); cout << "\n";
 			unsigned N;
 			cout << "Введіть N: "; cin >> N;
 			list->DeleteEveryNth(N);
 			break;
 		}
-		case 7:	//Ok
+		case 7:	//Ok		Очистка
 			list->Clear();
 			break;
-		case 8: {	//Ok
+		case 8: {	//Ok	Сортування
+			list->Print(); cout << "\n";
 			bool sortMode;
 			cout << "За зростанням/спаданням (1/0): ";
 			cin >> sortMode;
 			list->Sort(sortMode);
 			break;
 		}
-		case 9: {	//Ok
+		case 9: {	//Ok	Пересування елемента
 			list->Print(); cout << "\n";
 			int Npos, posOfEl = InputPosition(list->GetLength(), 1);
 			cout << "Кількість позицій для пересування: "; cin >> Npos;
 			list->MoveElement(posOfEl, Npos);
 			break;
 		}
-		case 10: {	//Ok
+		case 10: {	//Ok	Створення копії
 			List* copy = list->GetCopy();
 			if (ListCopy) delete ListCopy;
 			ListCopy = copy;
 			break;
 		}
-		case 11:	//Ok
-			if (ListCopy) delete ListCopy;
-			ListCopy = NULL;
-			break;
-		case 12:	//Ok
+		case 11:	//Ok	Склеювання
 			if (MergedList) delete MergedList;
 			MergedList = List::MergeLists(*list1, *list2);
 			break;
-		case 13:	//Ok
-			if (MergedList) delete MergedList;
-			MergedList = NULL;
-			break;
-		case 14:	//Ok
+		case 12:	//Ok	Переріз
 			if (IntersectedList) delete IntersectedList;
 			IntersectedList = List::CreateIntersection(*list1, *list2);
 			break;
-		case 15:	//Ok
-			if (IntersectedList) delete IntersectedList;
-			IntersectedList = NULL;
+		case 13: {	//Ok	Видалення (копії, склеєного, переізу)
+			List** del = NULL;
+			cout << "\n#1 -> Скопійований";
+			cout << "\n#2 -> Склеєний";
+			cout << "\n#3 -> Переріз";
+			cout << "\n\nВибір: "; cin >> whoseList;
+
+			switch (whoseList) {
+			case '1': del = &ListCopy; break;
+			case '2': del = &MergedList; break;
+			case '3': del = &IntersectedList; break;
+			}
+
+			if (del && *del) {
+				delete* del;
+				*del = NULL;
+			}
 			break;
+		}
 		}
 
 
