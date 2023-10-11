@@ -28,7 +28,7 @@ void List::AddToEnd(const int data) {
 }
 
 bool List::AddAfterPosition(const unsigned int position, const int data) {
-
+	if (!head) return false;
 	if (position == 0) { AddToStart(data); return true; }
 
 	listItem* newItem = new listItem(data);
@@ -64,6 +64,7 @@ bool List::DeleteFromStart() {
 }
 
 bool List::DeletePosition(const unsigned int position) {
+	if (!head) return false;
 	if (!position) return false;
 	if (position == 1) return DeleteFromStart();
 
@@ -87,9 +88,9 @@ bool List::DeletePosition(const unsigned int position) {
 }
 
 void List::DeleteEveryNth(const unsigned int N) {
+	if (!head) return;
 	if (!N) return;
 	if (N == 1) return Clear();
-
 	listItem* currItem = head->nextItem;
 	listItem* prevItem = head;
 	unsigned int position = 2;
@@ -118,7 +119,7 @@ void List::Clear() {
 	}
 }
 
-void List::Sort(bool sortUp = true) {
+void List::Sort(bool sortUp) {
 	if (!head) return;
 	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
 		listItem* RequiredItem = i;

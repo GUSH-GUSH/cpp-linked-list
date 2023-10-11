@@ -29,7 +29,7 @@ public:
 	unsigned GetLength() { return length; }
 
 	//Функції додавання
-	void AddToStart(const int data); //Приймає безпосередньо дані, які треба додати
+	void AddToStart(const int data);
 
 	void AddToEnd(const int data);
 
