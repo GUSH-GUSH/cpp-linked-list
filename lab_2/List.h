@@ -46,8 +46,6 @@ public:
 	void Clear();
 
 
-
-	//Дописать коменты
 	bool MoveElement(const int posOfEl, const int Npos);
 	
 	void Sort(bool sortUp = true);
