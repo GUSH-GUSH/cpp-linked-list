@@ -79,24 +79,12 @@ int main()
 			cout << "\n\nВибір: "; cin >> whoseList;
 
 			switch (whoseList) {
-			case '1':
-				list = list1;
-				break;
-			case '2':
-				list = list2;
-				break;
-			case '3':
-				list = ListCopy;
-				break;
-			case '4':
-				list = MergedList;
-				break;
-			case '5':
-				list = IntersectedList;
-				break;
-			default:
-				list = list1;
-				break;
+			case '1': list = list1; break;
+			case '2': list = list2; break;
+			case '3': list = ListCopy; break;
+			case '4': list = MergedList; break;
+			case '5': list = IntersectedList; break;
+			default: list = list1; break;
 			}
 			//system("cls");
 			if (!list) {
@@ -107,32 +95,32 @@ int main()
 		}
 
 		switch (answ) {
-		case 1:	//Ok		Додавання в початок		++
+		case 1:	//  		Додавання в початок
 			list->AddToStart(InputElement());
 			break;
-		case 2:	//Ok		Додавання в кінець		++
+		case 2:	//  		Додавання в кінець
 			list->AddToEnd(InputElement());
 			break;
-		case 3:	//Ok		Додавання після позиції	++
-			list->AddAfterPosition(InputPositionWithLim(list->GetLength()), InputElement()); //OK
+		case 3:	//  		Додавання після позиції
+			list->AddAfterPosition(InputPositionWithLim(list->GetLength()), InputElement()); //  
 			break;
-		case 4:	//Ok		Видалення із початку	++
+		case 4:	//  		Видалення із початку
 			list->DeleteFromStart();
 			break;
-		case 5:	//Ok		Видалення N-го			++
+		case 5:	//  		Видалення N-го
 			list->DeletePosition(InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0));
 			break;
-		case 6: {	//Ok	Видалення кожного N-го	++
+		case 6: {	//  	Видалення кожного N-го
 			//list->Print(); cout << "\n";
 			unsigned N;
 			cout << "Введіть N: "; cin >> N;
 			list->DeleteEveryNth(N);
 			break;
 		}
-		case 7:	//Ok		Очистка					++
+		case 7:	//  		Очистка
 			list->Clear();
 			break;
-		case 8: {	//Ok	Сортування				++
+		case 8: {	//  	Сортування
 			//list->Print(); cout << "\n";
 			bool sortMode;
 			cout << "За зростанням/спаданням (1/0): ";
@@ -140,28 +128,28 @@ int main()
 			list->Sort(sortMode);
 			break;
 		}
-		case 9: {	//Ok	Пересування елемента	++
+		case 9: {	//  	Пересування елемента
 			//list->Print(); cout << "\n";
 			int Npos, posOfEl = InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0);
 			cout << "Кількість позицій для пересування: "; cin >> Npos;
 			list->MoveElement(posOfEl, Npos);
 			break;
 		}
-		case 10: {	//Ok	Створення копії			++
+		case 10: {	//  	Створення копії
 			List* copy = list->GetCopy();
 			if (ListCopy) delete ListCopy;
 			ListCopy = copy;
 			break;
 		}
-		case 11:	//Ok	Склеювання				++
+		case 11:	//  	Склеювання
 			if (MergedList) delete MergedList;
 			MergedList = List::MergeLists(*list1, *list2);
 			break;
-		case 12:	//Ok	Переріз					++
+		case 12:	//  	Переріз
 			if (IntersectedList) delete IntersectedList;
 			IntersectedList = List::CreateIntersection(*list1, *list2);
 			break;
-		case 13: {	//Ok	Видалення (копії, склеєного, переізу)	++
+		case 13: {	//  	Видалення (копії, склеєного, переізу)
 			List** del = NULL;
 			cout << "\n#1 -> Скопійований";
 			cout << "\n#2 -> Склеєний";

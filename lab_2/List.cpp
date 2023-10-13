@@ -1,7 +1,7 @@
 #include "List.h"
 
 //Функції додавання
-void List::AddToStart(const int data) { //Приймає безпосередньо дані, які треба додати
+void List::AddToStart(const int data) {
 
 	listItem* newItem = new listItem(data);
 
@@ -119,6 +119,7 @@ void List::Clear() {
 	}
 }
 
+
 void List::Sort(bool sortUp) {
 	if (!head) return;
 	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
@@ -136,7 +137,6 @@ void List::Sort(bool sortUp) {
 }
 
 
-//Дописать коменты
 bool List::MoveElement(const int posOfEl, const int Npos) {
 	if (!head) return false;
 
