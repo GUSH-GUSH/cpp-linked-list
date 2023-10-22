@@ -19,9 +19,7 @@ void List::AddToEnd(const int data) {
 	if (head == NULL) head = newItem;
 	else {
 		listItem* curr = head;
-
 		while (curr->nextItem) curr = curr->nextItem;
-
 		curr->nextItem = newItem;
 	}
 	this->length++;
@@ -91,6 +89,7 @@ void List::DeleteEveryNth(const unsigned int N) {
 	if (!head) return;
 	if (!N) return;
 	if (N == 1) return Clear();
+
 	listItem* currItem = head->nextItem;
 	listItem* prevItem = head;
 	unsigned int position = 2;
@@ -120,22 +119,42 @@ void List::Clear() {
 }
 
 
-void List::Sort(bool sortUp) {
+//Варінант з заміною поля данних
+/*void List::Sort(bool sortUp) {
 	if (!head) return;
 	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
-		listItem* RequiredItem = i;
+		listItem* requiredItem = i;
 
 		for (listItem* j = i->nextItem; j != NULL; j = j->nextItem)
-			if ((RequiredItem->data > j->data) == sortUp) RequiredItem = j;
+			if ((requiredItem->data > j->data) == sortUp) requiredItem = j;
 
-		if (RequiredItem->data != i->data) {
+		if (requiredItem != i) {
 			int temp = i->data;
-			i->data = RequiredItem->data;
-			RequiredItem->data = temp;
+			i->data = requiredItem->data;
+			requiredItem->data = temp;
 		}
 	}
 }
+*/
 
+//Варіант із переміщенням безпосередньо елемента
+void List::Sort(bool sortUp) {
+	if (!head) return;
+	int pos_i = 1;
+	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem, pos_i++) {
+		listItem* requiredItem = i;
+		int requiredPosition = pos_i, pos_j = pos_i + 1;
+
+		for (listItem* j = i->nextItem; j != NULL; j = j->nextItem, pos_j++)
+			if ((requiredItem->data > j->data) == sortUp) { requiredItem = j; requiredPosition = pos_j; }
+		
+		if (requiredPosition != pos_i) {
+			i = requiredItem;
+			MoveElement(requiredPosition, pos_i - requiredPosition); //Переміщуємо необхдний елемент на місце поточного
+			//MoveElement(pos_i + 1, requiredPosition - pos_i - 1);	 //Переміщуємо старий елемент
+		}
+	}
+}
 
 bool List::MoveElement(const int posOfEl, const int Npos) {
 	if (!head) return false;
@@ -235,7 +254,7 @@ List* List::MergeLists(List& list1, List& list2) {
 	newList->length += secondPart->length;	//Сумується поле length
 
 	secondPart->head = NULL;				//У копії list2 затирається посилання head
-	delete secondPart;						//Аби при очищенні пам'яті елементи не стерлися
+	delete secondPart;						//Аби при очищенні пам'яті елементи не видалялися
 	return newList;
 }
 
