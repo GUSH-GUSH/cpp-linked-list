@@ -119,24 +119,6 @@ void List::Clear() {
 }
 
 
-//Варінант з заміною поля данних
-/*void List::Sort(bool sortUp) {
-	if (!head) return;
-	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem) {
-		listItem* requiredItem = i;
-
-		for (listItem* j = i->nextItem; j != NULL; j = j->nextItem)
-			if ((requiredItem->data > j->data) == sortUp) requiredItem = j;
-
-		if (requiredItem != i) {
-			int temp = i->data;
-			i->data = requiredItem->data;
-			requiredItem->data = temp;
-		}
-	}
-}
-*/
-
 //Варіант із переміщенням безпосередньо елемента
 void List::Sort(bool sortUp) {
 	if (!head) return;

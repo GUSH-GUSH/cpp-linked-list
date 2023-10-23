@@ -30,6 +30,7 @@ int main()
 
 	List* list1, * list2, * IntersectedList, * MergedList, * ListCopy;
 
+	//Стартові дані списків
 	int arr1[7] = { 4, 5, 1, 6, 10, 8, 129 };
 	int arr2[5] = { 13, 8, 125, 4, 0 };
 
@@ -86,10 +87,9 @@ int main()
 			case '5': list = IntersectedList; break;
 			default: list = list1; break;
 			}
-			//system("cls");
+
 			if (!list) {
-				cout << "Ліста не існує! (далі - будь-який символ)\n";
-				cin >> answ;
+				cout << "Ліста не існує! (далі - будь-який символ)\n"; cin >> answ;
 				continue;
 			}
 		}
@@ -111,7 +111,6 @@ int main()
 			list->DeletePosition(InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0));
 			break;
 		case 6: {	//  	Видалення кожного N-го
-			//list->Print(); cout << "\n";
 			unsigned N;
 			cout << "Введіть N: "; cin >> N;
 			list->DeleteEveryNth(N);
@@ -121,7 +120,6 @@ int main()
 			list->Clear();
 			break;
 		case 8: {	//  	Сортування
-			//list->Print(); cout << "\n";
 			bool sortMode;
 			cout << "За зростанням/спаданням (1/0): ";
 			cin >> sortMode;
@@ -129,7 +127,6 @@ int main()
 			break;
 		}
 		case 9: {	//  	Пересування елемента
-			//list->Print(); cout << "\n";
 			int Npos, posOfEl = InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0);
 			cout << "Кількість позицій для пересування: "; cin >> Npos;
 			list->MoveElement(posOfEl, Npos);
@@ -163,7 +160,7 @@ int main()
 			}
 
 			if (del && *del) {
-				delete* del;
+				delete *del;
 				*del = NULL;
 			}
 			break;
