@@ -1,21 +1,14 @@
 ﻿#include <iostream>
 #include <windows.h>
 #include "List.h"
+
 using namespace std;
 
-int InputElement() {
-	int value;
-	cout << "Введіть значення: ";
-	cin >> value;
+template <typename T>
+T InputData(const char* message = "Введіть дані: ") {
+	T value;
+	cout << message; cin >> value;
 	return value;
-}
-unsigned InputPositionWithLim(unsigned maxPos = 1, unsigned minPos = 0) {
-	unsigned pos;
-	do {
-		cout << "Введіть позицію [" << minPos << " - " << maxPos << "]: ";
-		cin >> pos;
-	} while (maxPos < pos || pos < minPos);
-	return pos;
 }
 
 void listPrint(const char* listName, List* list) {
@@ -24,8 +17,7 @@ void listPrint(const char* listName, List* list) {
 	cout << "\n\n";
 }
 
-int main()
-{
+int main() {
 	SetConsoleOutputCP(1251);
 
 	List* list1, * list2, * IntersectedList, * MergedList, * ListCopy;
@@ -96,46 +88,30 @@ int main()
 
 		switch (answ) {
 		case 1:	//  		Додавання в початок
-			list->AddToStart(InputElement());
-			break;
+			list->AddToStart(InputData<int>("Введіть елемент: ")); break;
 		case 2:	//  		Додавання в кінець
-			list->AddToEnd(InputElement());
-			break;
+			list->AddToEnd(InputData<int>("Введіть елемент: ")); break;
 		case 3:	//  		Додавання після позиції
-			list->AddAfterPosition(InputPositionWithLim(list->GetLength()), InputElement()); //  
-			break;
+			list->AddAfterPosition(InputData<size_t>("Введіть індекс позиції: "), InputData<int>("Введіть елемент: ")); break;
 		case 4:	//  		Видалення із початку
-			list->DeleteFromStart();
-			break;
+			list->DeleteFromStart(); break;
 		case 5:	//  		Видалення N-го
-			list->DeletePosition(InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0));
-			break;
-		case 6: {	//  	Видалення кожного N-го
-			unsigned N;
-			cout << "Введіть N: "; cin >> N;
-			list->DeleteEveryNth(N);
-			break;
-		}
+			list->DeletePosition(InputData<size_t>("Введіть iндекс: ")); break;
+		case 6:	//  		Видалення кожного N-го
+			list->DeleteEveryNth(InputData<size_t>("Введіть N: ")); break;
 		case 7:	//  		Очистка
-			list->Clear();
-			break;
-		case 8: {	//  	Сортування
-			bool sortMode;
-			cout << "За зростанням/спаданням (1/0): ";
-			cin >> sortMode;
-			list->Sort(sortMode);
-			break;
-		}
+			list->Clear(); break;
+		case 8:	//  	Сортування
+			list->Sort(InputData<bool>("За зростанням/спаданням (1/0): ")); break;
 		case 9: {	//  	Пересування елемента
-			int Npos, posOfEl = InputPositionWithLim(list->GetLength(), list->GetLength() ? 1 : 0);
-			cout << "Кількість позицій для пересування: "; cin >> Npos;
+			int posOfEl = InputData<int>("Індекс елемента: ");
+			int Npos = InputData<int>("Кількість позицій для пересування : ");
 			list->MoveElement(posOfEl, Npos);
 			break;
 		}
 		case 10: {	//  	Створення копії
-			List* copy = list->GetCopy();
 			if (ListCopy) delete ListCopy;
-			ListCopy = copy;
+			ListCopy = list->GetCopy();
 			break;
 		}
 		case 11:	//  	Склеювання

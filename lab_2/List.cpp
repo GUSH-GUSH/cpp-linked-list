@@ -2,7 +2,6 @@
 
 //Функції додавання
 void List::AddToStart(const int data) {
-
 	listItem* newItem = new listItem(data);
 
 	if (head == NULL) head = newItem;
@@ -25,25 +24,22 @@ void List::AddToEnd(const int data) {
 	this->length++;
 }
 
-bool List::AddAfterPosition(const unsigned int position, const int data) {
+bool List::AddAfterPosition(const unsigned int index, const int data) {
 	if (!head) return false;
-	if (position == 0) { AddToStart(data); return true; }
-
+	
 	listItem* newItem = new listItem(data);
-
 	listItem* currItem = head;
-	unsigned int currPosition = 1;
-
+	unsigned int currIndex = 0;
 
 	while (currItem) {
-		if (currPosition == position) {
+		if (currIndex == index) {
 			newItem->nextItem = currItem->nextItem;
 			currItem->nextItem = newItem;
 			this->length++;
 			return true;
 		}
 
-		currPosition++;
+		currIndex++;
 		currItem = currItem->nextItem;
 	}
 	return false;
@@ -61,24 +57,23 @@ bool List::DeleteFromStart() {
 	return true;
 }
 
-bool List::DeletePosition(const unsigned int position) {
+bool List::DeletePosition(const unsigned int index) {
 	if (!head) return false;
-	if (!position) return false;
-	if (position == 1) return DeleteFromStart();
+	if (index == 0) return DeleteFromStart();
 
 	listItem* currItem = head->nextItem;
 	listItem* prevItem = head;
-	unsigned int currPosition = 2;
+	unsigned int currIndex = 1;
 
 	while (currItem) {
-		if (currPosition == position) { //Дошли до удаляемого элемента - currItem;
+		if (currIndex == index) {	//Дошли до удаляемого элемента
 			prevItem->nextItem = currItem->nextItem;
 			delete currItem;
 			this->length--;
 			return true;
 		}
 
-		currPosition++;
+		currIndex++;
 		prevItem = currItem;
 		currItem = currItem->nextItem;
 	}
@@ -99,7 +94,6 @@ void List::DeleteEveryNth(const unsigned int N) {
 			prevItem->nextItem = currItem->nextItem;
 			delete currItem;
 			currItem = prevItem;
-
 			this->length--;
 		}
 
@@ -122,41 +116,40 @@ void List::Clear() {
 //Варіант із переміщенням безпосередньо елемента
 void List::Sort(bool sortUp) {
 	if (!head) return;
-	int pos_i = 1;
-	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem, pos_i++) {
+	int index_i = 0;
+	for (listItem* i = head; i->nextItem != NULL; i = i->nextItem, index_i++) {
 		listItem* requiredItem = i;
-		int requiredPosition = pos_i, pos_j = pos_i + 1;
+		int requiredIndex = index_i, index_j = index_i + 1;
 
-		for (listItem* j = i->nextItem; j != NULL; j = j->nextItem, pos_j++)
-			if ((requiredItem->data > j->data) == sortUp) { requiredItem = j; requiredPosition = pos_j; }
+		for (listItem* j = i->nextItem; j != NULL; j = j->nextItem, index_j++)
+			if ((requiredItem->data > j->data) == sortUp) { requiredItem = j; requiredIndex = index_j; }
 		
-		if (requiredPosition != pos_i) {
+		if (requiredIndex != index_i) {
 			i = requiredItem;
-			MoveElement(requiredPosition, pos_i - requiredPosition); //Переміщуємо необхдний елемент на місце поточного
-			//MoveElement(pos_i + 1, requiredPosition - pos_i - 1);	 //Переміщуємо старий елемент
+			MoveElement(requiredIndex, index_i - requiredIndex); //Переміщуємо необхдний елемент на місце поточного
 		}
 	}
 }
 
-bool List::MoveElement(const int posOfEl, const int Npos) {
+bool List::MoveElement(const int index, const int Npos) {
 	if (!head) return false;
 
-	const int newPos = posOfEl + ((Npos > 0) ? (Npos + 1) : Npos);
-	if (posOfEl < 1 || newPos < 1 || posOfEl == newPos) return false;
+	const int newIndex = index + ((Npos > 0) ? (Npos + 1) : Npos);
+	if (index < 0 || newIndex < 0 || index == newIndex) return false;
 
-	int currPos = 2;
+	int currIndex = 1;
 	listItem
 		* currItem = head->nextItem,
 		* prevItem = head,
 		* prevOfNewPos = NULL,
 		* prevOfOldPos = NULL,
-		* MovingItem = (posOfEl == 1) ? head : NULL;
+		* MovingItem = (index == 0) ? head : NULL;
 
-	while (currItem) {
-		if (currPos == posOfEl) { prevOfOldPos = prevItem; MovingItem = currItem; }
-		else if (currPos == newPos) prevOfNewPos = prevItem;
+	while (currItem && (!MovingItem || !prevOfNewPos)) {
+		if (currIndex == index) { prevOfOldPos = prevItem; MovingItem = currItem; }
+		else if (currIndex == newIndex) prevOfNewPos = prevItem;
 
-		currPos++;
+		currIndex++;
 		prevItem = currItem;
 		currItem = currItem->nextItem;
 	}
@@ -164,13 +157,13 @@ bool List::MoveElement(const int posOfEl, const int Npos) {
 	if (!MovingItem) return false;	//Якщо зміщуваний об'экт не було знайдено
 
 	//Виключна ситуація, коли зміщуємо в кінець
-	if (currPos == newPos) prevOfNewPos = prevItem;
+	if (currIndex == newIndex) prevOfNewPos = prevItem;
 
 	listItem** p_prevOfOldPos_NI = NULL, ** p_prevOfNewPos_NI = NULL;
 
 	//Виключні випадки, коли або переставляємо У початок, або ІЗ початку
-	if (posOfEl == 1 && prevOfNewPos) p_prevOfOldPos_NI = &head; //Із початку
-	else if (newPos == 1 && prevOfOldPos) p_prevOfNewPos_NI = &head; //У початок
+	if (index == 0 && prevOfNewPos) p_prevOfOldPos_NI = &head; //Із початку
+	else if (newIndex == 0 && prevOfOldPos) p_prevOfNewPos_NI = &head; //У початок
 	else if (!prevOfOldPos || !prevOfNewPos) return false;
 
 	//Якщо жоден з виключних випадків не спрацював, заповнюємо звичайними значеннями
@@ -188,10 +181,8 @@ bool List::MoveElement(const int posOfEl, const int Npos) {
 
 void List::CopyFromArr(int* arr, int length) {
 	Clear();
-	for (int i = length - 1; i >= 0; i--)
-		AddToStart(arr[i]);
+	for (int i = length - 1; i >= 0; i--) AddToStart(arr[i]);
 }
-
 
 List* List::GetCopy() {
 	List* listCopy = new List(*this);
@@ -210,13 +201,7 @@ List* List::GetCopy() {
 
 void List::Print() {
 	if (!head) { cout << "Список порожній\n"; return; }
-	listItem* currItem = head;
-
-	while (currItem) {
-		cout << currItem->data << "  ";
-		currItem = currItem->nextItem;
-	}
-
+	for (listItem* currItem = head; currItem != NULL; currItem = currItem->nextItem) cout << currItem->data << "  ";
 	cout << endl;
 }
 
