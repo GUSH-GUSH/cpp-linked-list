@@ -23,11 +23,11 @@ int main() {
 	List* list1, * list2, * IntersectedList, * MergedList, * ListCopy;
 
 	//Стартові дані списків
-	int arr1[7] = { 4, 5, 1, 6, 10, 8, 129 };
-	int arr2[5] = { 13, 8, 125, 4, 0 };
+	int arr1[3] = { 4, 5, 1 };
+	int arr2[2] = { 13, 8 };
 
-	list1 = new List(arr1, 7);
-	list2 = new List(arr2, 5);
+	list1 = new List(arr1, 3);
+	list2 = new List(arr2, 2);
 	IntersectedList = MergedList = ListCopy = NULL;
 
 
