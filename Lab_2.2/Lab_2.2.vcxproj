@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e928dd90-04a3-427e-9099-892c0e3f1ab7}</ProjectGuid>
-    <RootNamespace>lab2</RootNamespace>
+    <ProjectGuid>{99e8babe-830e-44e1-8f03-cbf17eee6b0d}</ProjectGuid>
+    <RootNamespace>Lab22</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,11 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lab_2.1.cpp" />
-    <ClCompile Include="List.cpp" />
+    <ClCompile Include="Lab_2.2.cpp" />
+    <ClCompile Include="LoopList.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="List.h" />
+    <ClInclude Include="LoopList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
